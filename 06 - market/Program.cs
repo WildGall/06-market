@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -17,46 +17,46 @@ namespace _06___market
     {
         public void Work()
         {
-            const string Shopping = "1";
-            const string ProductsList = "2";
-            const string ShoppingList = "3";
-            const string ExitProgram = "4";
+            const string CommandShopping = "1";
+            const string CommandProductsList = "2";
+            const string CommandShoppingList = "3";
+            const string CommandExitProgram = "4";
 
-            bool programIsWork = true;
+            bool isProgramWork = true;
             Buyer buyer = new Buyer();
             Salesman salesman = new Salesman();
 
-            while (programIsWork)
+            while (isProgramWork)
             {
                 Console.Clear();
                 Console.SetCursorPosition(0, 0);
                 Console.WriteLine("Выбирите действие: ");
-                Console.WriteLine($"{Shopping})Покупка\n{ProductsList})Список продоваемых вещей\n{ShoppingList})Список купленных вещей\n{ExitProgram})Выход");
+                Console.WriteLine($"{CommandShopping})Покупка\n{CommandProductsList})Список продaваемых вещей\n{CommandShoppingList})Список купленных вещей\n{CommandExitProgram})Выход");
                 string userInput = Console.ReadLine();
 
                 
                 switch (userInput)
                 {
-                    case Shopping:
-                        Pay(salesman, buyer);
+                    case CommandShopping:
+                        Trade(salesman, buyer);
                         break;
 
-                    case ProductsList:
+                    case CommandProductsList:
                         salesman.ShowProducts();
                         break;
 
-                    case ShoppingList:
+                    case CommandShoppingList:
                         buyer.ShowProducts();
                         break;
 
-                    case ExitProgram:
-                        programIsWork = false;
+                    case CommandExitProgram:
+                        isProgramWork = false;
                         break;
                 }
             }
         }
 
-        public void Pay(Salesman salesman, Buyer buyer)
+        public void Trade(Salesman salesman, Buyer buyer)
         {
             Console.WriteLine("Введите номер товара:");
             int.TryParse(Console.ReadLine(), out int userInput);
@@ -72,19 +72,41 @@ namespace _06___market
         }
     }
 
-    class Buyer
+    class Human
     {
-        private List<Product> _products = new List<Product>();
-        private int _wallet = 1000;
+        public List<Product> Products = new List<Product>();
+        public int Wallet;
+
+        public Human(int wallet)
+        {
+            Wallet = wallet;
+        }            
+
+        public void ShowProducts()
+        {
+            Console.WriteLine("В кошельке: " + Wallet + "руб.\n");
+
+            foreach (Product products in Products)
+            {
+                products.ShowInfo();
+            }
+
+            Console.ReadKey();
+        }
+    }
+
+    class Buyer : Human
+    {
+        public Buyer() : base(1000) { }
 
         public void TakeProduct(Product product)
         {
-            if (_wallet >= product.Price())
+            if (Wallet >= product.AppointPrice())
             {
-                _products.Add(product);
+                Products.Add(product);
                 Console.Write("Вы Купили: ");
-                _wallet -= product.Price();
-                _products.Last().ShowInfo();
+                Wallet -= product.AppointPrice();
+                Products.Last().ShowInfo();
                 Console.Write("\nДля продолжения нажмите любую кнопку:");                
             }
             else
@@ -93,60 +115,37 @@ namespace _06___market
             }
 
             Console.ReadKey();           
-        }             
-
-        public void ShowProducts()
-        {
-            Console.WriteLine("Остаток денег:" + _wallet);
-
-            foreach (Product products in _products)
-            {                
-                products.ShowInfo();
-            }
-
-            Console.ReadKey();
-        }   
+        }           
     }
 
-    class Salesman
+    class Salesman : Human
     {
-        private List<Product> _products = new List<Product>();
-
-        public Salesman()
+        public Salesman() : base(0) 
         {
             ListProducts();
         }
 
         public Product GiveProduct(int userInput)
         {
-            Product product = _products[userInput];
+            Product product = Products[userInput];
+            Wallet += product.AppointPrice();
             return product;
-        }
-
-        public void ShowProducts()
-        {
-            foreach (Product products in _products)
-            {
-                products.ShowInfo();
-            }
-
-            Console.ReadKey();
         }
 
         public int LengthList()
         {
-            return _products.Count;
+            return Products.Count;
         }
 
         private void ListProducts()
         {
-            _products.Add(new Product("Картошка", 49));
-            _products.Add(new Product("Капуста", 60));
-            _products.Add(new Product("Морковь", 48));
-            _products.Add(new Product("Лук", 31));
-            _products.Add(new Product("Свекла", 45));
-            _products.Add(new Product("Колбаса", 120));
-            _products.Add(new Product("Хлеб", 17));
+            Products.Add(new Product("Картошка", 49));
+            Products.Add(new Product("Капуста", 60));
+            Products.Add(new Product("Морковь", 48));
+            Products.Add(new Product("Лук", 31));
+            Products.Add(new Product("Свекла", 45));
+            Products.Add(new Product("Колбаса", 120));
+            Products.Add(new Product("Хлеб", 17));
         }
     }
 
@@ -166,7 +165,7 @@ namespace _06___market
             Console.WriteLine($"{_name}. Цена = {_price}");
         }
 
-        public int Price()
+        public int AppointPrice()
         {
             return _price;
         }        
