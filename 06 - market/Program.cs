@@ -33,7 +33,6 @@ namespace _06___market
                 Console.WriteLine("Выбирите действие: ");
                 Console.WriteLine($"{CommandShopping})Покупка\n{CommandProductsList})Список продaваемых вещей\n{CommandShoppingList})Список купленных вещей\n{CommandExitProgram})Выход");
                 string userInput = Console.ReadLine();
-
                 
                 switch (userInput)
                 {
@@ -56,7 +55,7 @@ namespace _06___market
             }
         }
 
-        public void Trade(Salesman salesman, Buyer buyer)
+        private void Trade(Salesman salesman, Buyer buyer)
         {
             Console.WriteLine("Введите номер товара:");
             int.TryParse(Console.ReadLine(), out int userInput);
