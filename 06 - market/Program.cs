@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace _06___market
 {
@@ -23,6 +25,7 @@ namespace _06___market
             const string CommandExitProgram = "4";
 
             bool isProgramWork = true;
+            
             Buyer buyer = new Buyer();
             Salesman salesman = new Salesman();
 
@@ -61,9 +64,9 @@ namespace _06___market
             int.TryParse(Console.ReadLine(), out int userInput);
             userInput -= 1;
 
-            if (userInput > 0 && userInput < salesman.LengthList())
-            {
-                buyer.TakeProduct(salesman.GiveProduct(userInput));
+            if (userInput >= 0 && userInput < salesman.GetProductsCount())
+            {                
+                buyer.TakeProduct(salesman.GiveProduct(userInput , salesman));
             } 
             else { Console.WriteLine("Не верный номер товара"); }
 
@@ -73,19 +76,34 @@ namespace _06___market
 
     class Human
     {
-        public List<Product> Products = new List<Product>();
-        public int Wallet;
+        private List<Product> _products = new List<Product>();
+        protected int Wallet;
 
         public Human(int wallet)
         {
             Wallet = wallet;
-        }            
+        }  
+
+        public void AddProduct(string name, int price)
+        {
+            _products.Add(new Product(name, price));
+        }
+
+        public int GetProductsCount()
+        {
+           return _products.Count;
+        }
+
+        public Product GetProductByIndex(int index)
+        {
+            return _products.ElementAt(index);
+        }
 
         public void ShowProducts()
         {
             Console.WriteLine("В кошельке: " + Wallet + "руб.\n");
 
-            foreach (Product products in Products)
+            foreach (Product products in _products)
             {
                 products.ShowInfo();
             }
@@ -100,20 +118,17 @@ namespace _06___market
 
         public void TakeProduct(Product product)
         {
-            if (Wallet >= product.AppointPrice())
+            if (Wallet >= product.GetPrice())
             {
-                Products.Add(product);
-                Console.Write("Вы Купили: ");
-                Wallet -= product.AppointPrice();
-                Products.Last().ShowInfo();
-                Console.Write("\nДля продолжения нажмите любую кнопку:");                
+                AddProduct(product.GetName(), product.GetPrice());                
+                Wallet -= product.GetPrice();
+                Console.Write($"Вы Купили: {product.GetName()} за {product.GetPrice()} руб. Остаток: {Wallet}");
+                Console.Write("\nДля продолжения нажмите любую кнопку:");
             }
             else
             {
                 Console.WriteLine("Недостаточно денег");
-            }
-
-            Console.ReadKey();           
+            }        
         }           
     }
 
@@ -124,28 +139,23 @@ namespace _06___market
             ListProducts();
         }
 
-        public Product GiveProduct(int userInput)
-        {
-            Product product = Products[userInput];
-            Wallet += product.AppointPrice();
+        public Product GiveProduct(int userInput, Salesman salesman)
+        { 
+            Product product = salesman.GetProductByIndex(userInput);
+            Wallet += product.GetPrice();
             return product;
-        }
-
-        public int LengthList()
-        {
-            return Products.Count;
         }
 
         private void ListProducts()
         {
-            Products.Add(new Product("Картошка", 49));
-            Products.Add(new Product("Капуста", 60));
-            Products.Add(new Product("Морковь", 48));
-            Products.Add(new Product("Лук", 31));
-            Products.Add(new Product("Свекла", 45));
-            Products.Add(new Product("Колбаса", 120));
-            Products.Add(new Product("Хлеб", 17));
-        }
+            AddProduct("Картошка", 49);
+            AddProduct("Капуста", 60);
+            AddProduct("Морковь", 48);
+            AddProduct("Лук", 31);
+            AddProduct("Свекла", 45);
+            AddProduct("Колбаса", 120);
+            AddProduct("Хлеб", 17);  
+        }            
     }
 
     class Product
@@ -164,9 +174,14 @@ namespace _06___market
             Console.WriteLine($"{_name}. Цена = {_price}");
         }
 
-        public int AppointPrice()
+        public int GetPrice()
         {
             return _price;
-        }        
+        }   
+        
+        public String GetName()
+        {
+            return _name;
+        }
     }
 }
