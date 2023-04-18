@@ -82,9 +82,9 @@ namespace _06___market
             Wallet = wallet;
         }  
 
-        public void AddProduct(string name, int price)
+        public void AddProduct(Product product)
         {
-            _products.Add(new Product(name, price));
+            _products.Add(product);
         }
 
         public int GetProductsCount()
@@ -116,11 +116,11 @@ namespace _06___market
 
         public void TakeProduct(Product product)
         {
-            if (Wallet >= product.GetPrice())
+            if (Wallet >= product.Price)
             {
-                AddProduct(product.GetName(), product.GetPrice());                
-                Wallet -= product.GetPrice();
-                Console.Write($"Вы Купили: {product.GetName()} за {product.GetPrice()} руб. Остаток: {Wallet}");
+                AddProduct(product);                
+                Wallet -= product.Price;
+                Console.Write($"Вы Купили: {product.Name} за {product.Price} руб. Остаток: {Wallet}");
                 Console.Write("\nДля продолжения нажмите любую кнопку:");
             }
             else
@@ -140,19 +140,19 @@ namespace _06___market
         public Product GiveProduct(int userInput, Salesman salesman)
         { 
             Product product = salesman.GetProductByIndex(userInput);
-            Wallet += product.GetPrice();
+            Wallet += product.Price;
             return product;
         }
 
         private void ListProducts()
         {
-            AddProduct("Картошка", 49);
-            AddProduct("Капуста", 60);
-            AddProduct("Морковь", 48);
-            AddProduct("Лук", 31);
-            AddProduct("Свекла", 45);
-            AddProduct("Колбаса", 120);
-            AddProduct("Хлеб", 17);  
+            AddProduct(new Product("Картошка", 49));
+            AddProduct(new Product("Капуста", 60));
+            AddProduct(new Product("Морковь", 48));
+            AddProduct(new Product("Лук", 31));
+            AddProduct(new Product("Свекла", 45));
+            AddProduct(new Product("Колбаса", 120));
+            AddProduct(new Product("Хлеб", 17));  
         }            
     }
 
@@ -161,25 +161,18 @@ namespace _06___market
         private string _name;
         private int _price;
 
+        public int Price { get { return _price; } private set { _price = value; } }
+        public string Name { get { return _name; } private set { _name = value; } }
+
         public Product(string name, int price)
         {
             _name = name;
             _price = price;
-        }
+        }        
 
         public void ShowInfo()
         {  
             Console.WriteLine($"{_name}. Цена = {_price}");
-        }
-
-        public int GetPrice()
-        {
-            return _price;
-        }   
-        
-        public String GetName()
-        {
-            return _name;
-        }
+        }        
     }
 }
