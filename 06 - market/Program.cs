@@ -66,7 +66,10 @@ namespace _06___market
             {                
                 buyer.TakeProduct(salesman.GiveProduct(userInput , salesman));
             } 
-            else { Console.WriteLine("Не верный номер товара"); }
+            else 
+            {
+                Console.WriteLine("Не верный номер товара"); 
+            }
 
             Console.ReadKey();
         }
@@ -80,22 +83,12 @@ namespace _06___market
         public Human(int wallet)
         {
             Wallet = wallet;
-        }  
-
-        public void AddProduct(Product product)
-        {
-            _products.Add(product);
-        }
+        }        
 
         public int GetProductsCount()
         {
            return _products.Count;
-        }
-
-        public Product GetProductByIndex(int index)
-        {
-            return _products.ElementAt(index);
-        }
+        }               
 
         public void ShowProducts()
         {
@@ -107,6 +100,16 @@ namespace _06___market
             }
 
             Console.ReadKey();
+        }
+
+        protected void AddProduct(Product product)
+        {
+            _products.Add(product);
+        }
+
+        protected Product GetProductByIndex(int index)
+        {
+            return _products.ElementAt(index);
         }
     }
 
@@ -159,16 +162,36 @@ namespace _06___market
     class Product
     {
         private string _name;
-        private int _price;
-
-        public int Price { get { return _price; } private set { _price = value; } }
-        public string Name { get { return _name; } private set { _name = value; } }
+        private int _price;        
 
         public Product(string name, int price)
         {
             _name = name;
             _price = price;
-        }        
+        }
+
+        public int Price
+        {
+            get
+            {
+                return _price;
+            }
+            private set
+            {
+                _price = value;
+            }
+        }
+        public string Name
+        {
+            get
+            {
+                return _name;
+            }
+            private set
+            {
+                _name = value;
+            }
+        }
 
         public void ShowInfo()
         {  
